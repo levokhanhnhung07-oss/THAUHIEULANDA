@@ -1,155 +1,186 @@
 import streamlit as st
 import time
 
-# --- 1. CẤU HÌNH TRANG ---
-st.set_page_config(
-    page_title="Gương Soi Kỹ Thuật Số ✨", 
-    page_icon="🌿", 
-    layout="centered"
-)
+# 1. CẤU HÌNH TRANG & GIAO DIỆN TỐI GIẢN (MINIMAL, ELEGANT)
+st.set_page_config(page_title="Gương Soi Kỹ Thuật Số", page_icon="✨", layout="centered")
 
-# --- 2. CSS TÙY CHỈNH (ĐÃ FIX LỖI CHỮ TÀNG HÌNH) ---
+# CSS tùy chỉnh để làm đẹp UI, ẩn các đường viền cứng, tạo cảm giác bo tròn, thanh lịch
 st.markdown("""
     <style>
-    /* Giao diện cơ bản (Gender-Neutral) */
-    .stApp {
-        background-color: #F7F9F9;
-    }
-    
-    /* FIX LỖI: Ép màu chữ tối cho toàn bộ văn bản và câu hỏi (label) để không bị chìm vào nền sáng */
-    p, label, span, div[data-testid="stMarkdownContainer"] p {
-        color: #1E2022 !important;
-    }
-    
-    .main-title {font-size: 32px; font-weight: 800; color: #2B6777 !important; text-align: center; margin-bottom: 5px;}
-    .subtitle {font-size: 16px; color: #52AB98 !important; text-align: center; font-style: italic; margin-bottom: 25px;}
-    
-    /* CSS cho Tooltip (Hiển thị kiến thức Marketing khi hover) */
-    .tooltip {
-        position: relative;
+    .tooltip-header {
+        border-bottom: 2px dotted #b0c4de;
         display: inline-block;
-        font-size: 24px;
-        font-weight: 700;
-        color: #1E2022 !important;
         cursor: help;
-        margin-top: 25px;
-        margin-bottom: 15px;
-        border-bottom: 2px dashed #52AB98; 
+        color: #2c3e50;
     }
-    .tooltip .tooltiptext {
-        visibility: hidden;
-        width: 340px;
-        background-color: #2B6777;
-        color: #FFFFFF !important;
-        text-align: left;
-        border-radius: 8px;
-        padding: 15px;
-        position: absolute;
-        z-index: 1;
-        bottom: 130%;
-        left: 50%;
-        margin-left: -170px;
-        opacity: 0;
-        transition: opacity 0.3s;
-        font-size: 14.5px;
-        font-weight: 400;
-        line-height: 1.5;
-        box-shadow: 0px 8px 16px rgba(0,0,0,0.15);
+    div.stButton > button:first-child {
+        border-radius: 20px;
+        background-color: #f7f9fa;
+        border: 1px solid #dcdcdc;
+        color: #2c3e50;
+        transition: 0.3s;
     }
-    .tooltip .tooltiptext::after {
-        content: "";
-        position: absolute;
-        top: 100%;
-        left: 50%;
-        margin-left: -6px;
-        border-width: 6px;
-        border-style: solid;
-        border-color: #2B6777 transparent transparent transparent;
-    }
-    .tooltip:hover .tooltiptext {
-        visibility: visible;
-        opacity: 1;
+    div.stButton > button:first-child:hover {
+        background-color: #e3e8ec;
+        border-color: #b0c4de;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# --- 3. BANNER HÌNH ẢNH & LỜI CHÀO ---
-st.image("https://images.unsplash.com/photo-1555820598-c801a1408dbb?q=80&w=1200&auto=format&fit=crop", use_container_width=True)
+# 2. KHỞI TẠO SESSION STATE ĐỂ CHUYỂN TRANG
+if 'page' not in st.session_state:
+    st.session_state.page = 0
+if 'nickname' not in st.session_state:
+    st.session_state.nickname = ""
 
-st.markdown('<p class="main-title">Chào Nhung! ✨</p>', unsafe_allow_html=True)
-st.markdown('<p class="subtitle">Hãy để chiếc gương kỹ thuật số này thiết kế liệu trình dành riêng cho bạn hôm nay.</p>', unsafe_allow_html=True)
-st.divider()
+def next_page():
+    st.session_state.page += 1
 
-# --- 4. PHẦN 1: ỨNG DỤNG 5.2.1 - BẢN CHẤT XÁC ĐỊNH VẤN ĐỀ ---
-st.markdown("""
-    <div class="tooltip">1. Phân Tích Hiện Trạng & Mục Tiêu
-        <span class="tooltiptext"><b>📚 Ứng dụng 5.2.1: Bản chất xác định vấn đề</b><br>Kích hoạt nhu cầu bằng cách cho khách hàng thấy sự chênh lệch giữa 'Trạng thái thực tế' (da hiện tại) và 'Trạng thái mong muốn' (mục tiêu).</span>
-    </div>
-""", unsafe_allow_html=True)
+def prev_page():
+    st.session_state.page -= 1
 
-col1, col2 = st.columns(2)
-with col1:
-    thuc_te = st.selectbox("Hiện tại da bạn đang gặp tình trạng gì?", 
-                           ["Đổ nhiều dầu, dễ nổi mụn", "Khô ráp, bong tróc", "Xỉn màu, mệt mỏi", "Bình thường"])
-with col2:
-    mong_muon = st.selectbox("Mục tiêu bạn hướng tới là gì?", 
-                             ["Sạch mụn, kiểm soát dầu", "Cấp ẩm sâu, căng mọng", "Sáng khỏe, đều màu", "Duy trì phong độ"])
+# ==========================================
+# TRANG 0: NHẬP BIỆT DANH TRƯỚC KHI BẮT ĐẦU
+# ==========================================
+if st.session_state.page == 0:
+    st.markdown("<h1 style='text-align: center; color: #2c3e50;'>✨ Chạm để khám phá bản thân</h1>", unsafe_allow_html=True)
+    st.write("---")
+    
+    st.markdown("""
+        <p style='text-align: center;'>Trước khi bắt đầu hành trình, hãy cho hệ thống biết tên gọi yêu thích của bạn nhé.</p>
+    """, unsafe_allow_html=True)
+    
+    nickname_input = st.text_input("Biệt danh xinh đẹp của bạn là:", placeholder="Ví dụ: Nhung...")
+    
+    col1, col2, col3 = st.columns([1, 1, 1])
+    with col2:
+        if st.button("Bắt đầu trải nghiệm ➔", use_container_width=True):
+            if nickname_input.strip():
+                st.session_state.nickname = nickname_input
+                next_page()
+            else:
+                st.warning("Vui lòng nhập tên để tiếp tục nha!")
 
-if st.button("Phân tích dữ liệu 🔍"):
-    with st.spinner('Hệ thống đang đối chiếu trạng thái...'):
-        time.sleep(1.5)
-    st.info(f"📊 **Báo cáo:** Trạng thái da hiện tại của bạn đang cách mục tiêu '{mong_muon}' khoảng **40%**. Chúng ta cần tập trung vào việc cân bằng lại độ ẩm và bảo vệ hàng rào da!")
+# ==========================================
+# TRANG 1: 5.2.1 BẢN CHẤT CỦA XÁC ĐỊNH VẤN ĐỀ
+# ==========================================
+elif st.session_state.page == 1:
+    st.markdown(f"## Chào {st.session_state.nickname}! 🌸")
+    
+    # Khu vực chèn ảnh xinh
+    st.image("https://images.unsplash.com/photo-1512496015851-a1c8dcbc7d43?auto=format&fit=crop&q=80&w=800", caption="Vẻ đẹp rạng rỡ từ sự thấu hiểu bản thân", use_container_width=True)
+    
+    st.write("---")
+    # Tiêu đề có Tooltip (Ấn giữ/Hover để đọc lý thuyết)
+    st.markdown('''
+        <h3 class="tooltip-header" title="LÝ THUYẾT 5.2.1: Quá trình ra quyết định mua sắm bắt đầu khi khách hàng nhận ra sự chênh lệch đủ lớn giữa trạng thái thực tế (hiện tại) và trạng thái mong muốn (lý tưởng).">
+        1. Gương Soi Kỹ Thuật Số (Skin & Lifestyle Quiz)
+        </h3>
+    ''', unsafe_allow_html=True)
 
-st.divider()
+    col1, col2 = st.columns(2)
+    with col1:
+        thuc_te = st.selectbox("Trạng thái thực tế:", ["Đang đổ dầu, nổi mụn", "Khô ráp, thiếu ẩm", "Mệt mỏi, stress vì deadline"])
+    with col2:
+        mong_muon = st.selectbox("Trạng thái mong muốn:", ["Da căng bóng, sạch sẽ", "Ẩm mượt, rạng rỡ", "Thư giãn tinh thần, tự tin"])
 
-# --- 5. PHẦN 2: ỨNG DỤNG 5.2.3 & 5.2.4 - YẾU TỐ NGOẠI CẢNH & TÂM TRẠNG ---
-st.markdown("""
-    <div class="tooltip">2. Nhịp Sống & Cảm Xúc Hôm Nay
-        <span class="tooltiptext"><b>📚 Ứng dụng 5.2.3 & 5.2.4:</b><br>- <b>Ngoại cảnh (Không kiểm soát):</b> Thời tiết, mùa thi cử, deadline.<br>- <b>Nghiên cứu cảm xúc:</b> Dựa vào Mood Tracker để đề xuất giải pháp chữa lành tinh thần thay vì chỉ bán sản phẩm vật lý.</span>
-    </div>
-""", unsafe_allow_html=True)
+    if st.button("🔍 Phân tích ngay"):
+        with st.spinner("Hệ thống đang so sánh trạng thái..."):
+            time.sleep(1)
+        st.success(f"**Báo cáo:** {st.session_state.nickname} thân mến, trạng thái của bạn đang có sự chênh lệch. Bạn đang ưu tiên giải quyết vấn đề '{thuc_te.lower()}' để đạt được cảm giác '{mong_muon.lower()}'. Da/Tinh thần của bạn đang thiếu 40% năng lượng so với mức lý tưởng. Hãy để hệ thống thiết kế giải pháp cho bạn nhé!")
 
-thoi_tiet = st.radio("Thời tiết khu vực của bạn hôm nay ra sao?", 
-                     ["Nắng gắt / Khô hanh ☀️", "Mưa ẩm / Lạnh 🌧️", "Ngồi phòng máy lạnh ❄️"], 
-                     horizontal=True)
+    st.write("---")
+    st.button("Tiếp theo ➔", on_click=next_page, key="btn_next_1")
 
-hoat_dong = st.selectbox("Nhịp độ cuộc sống gần đây của bạn thế nào?", 
-                         ["Đang chạy deadline / Sắp thi cuối kỳ 📚", "Di chuyển nhiều ngoài trời / Khói bụi 🛵", "Nhịp sống cân bằng, ổn định 🍵"])
+# ==========================================
+# TRANG 2: 5.2.2 CÁC LOẠI VẤN ĐỀ
+# ==========================================
+elif st.session_state.page == 2:
+    st.markdown('''
+        <h3 class="tooltip-header" title="LÝ THUYẾT 5.2.2: Vấn đề kích hoạt (KH đã nhận thức được nhu cầu và chủ động tìm kiếm). Vấn đề chưa kích hoạt (KH không biết mình có vấn đề, Marketer cần giáo dục và cảnh báo).">
+        2. Giải mã vấn đề của bạn
+        </h3>
+    ''', unsafe_allow_html=True)
+    st.write("---")
 
-mood = st.select_slider("Mức độ căng thẳng (Stress level) của bạn hiện tại?", 
-                        options=["Rất mệt mỏi", "Áp lực", "Bình thường", "Thoải mái", "Tràn đầy năng lượng"], 
-                        value="Áp lực")
+    tab1, tab2 = st.tabs(["💡 Vấn đề đã kích hoạt", "🌙 Vấn đề chưa kích hoạt"])
+    
+    with tab1:
+        st.write("Bạn đã biết mình cần gì! Dưới đây là các giải pháp ưu việt được đưa lên hàng đầu:")
+        st.info("**Giải pháp làm dịu da mụn & cấp ẩm:** \n\n✨ Gợi ý cho bạn các dòng sản phẩm chất lượng từ La Roche-Posay, Bioré, và mặt nạ Banobagi.")
+        
+    with tab2:
+        st.write("Góc cảnh báo sức khỏe làn da:")
+        st.warning(f"**{st.session_state.nickname} có biết?** Thức khuya dùng điện thoại phát ra ánh sáng xanh có thể làm da sạm đi 20% và đẩy nhanh lão hóa. \n\n👉 *Đề xuất:* Đã đến lúc bổ sung dòng sản phẩm phục hồi ban đêm vào chu trình skincare của bạn!")
 
-if mood in ["Rất mệt mỏi", "Áp lực"] or "deadline" in hoat_dong.lower():
-    st.success("🌿 **Góc Chữa Lành:** Trạng thái tinh thần ảnh hưởng trực tiếp đến làn da. Một chiếc mặt nạ làm dịu, chút tinh dầu tràm trà và một playlist Lofi sẽ giúp bạn lấy lại sự tập trung và giảm stress ngay lúc này!")
+    st.write("---")
+    col1, col2 = st.columns(2)
+    with col1:
+        st.button("⬅ Quay lại", on_click=prev_page)
+    with col2:
+        st.button("Tiếp theo ➔", on_click=next_page, key="btn_next_2")
 
-st.divider()
+# ==========================================
+# TRANG 3: 5.2.3 YẾU TỐ NGOẠI CẢNH
+# ==========================================
+elif st.session_state.page == 3:
+    st.markdown('''
+        <h3 class="tooltip-header" title="LÝ THUYẾT 5.2.3: Các yếu tố phi thị trường (như thời tiết, sự kiện cá nhân đột xuất) làm thay đổi trạng thái thực tế một cách thụ động, từ đó kích hoạt nhu cầu mới mà doanh nghiệp không trực tiếp kiểm soát được.">
+        3. Thời tiết & Nhịp sống
+        </h3>
+    ''', unsafe_allow_html=True)
+    st.write("---")
 
-# --- 6. PHẦN 3: ỨNG DỤNG 5.2.2 - KÍCH HOẠT VẤN ĐỀ & GIẢI PHÁP ---
-st.markdown("""
-    <div class="tooltip">3. Phác Đồ Dành Riêng Cho Bạn
-        <span class="tooltiptext"><b>📚 Ứng dụng 5.2.2: Các loại vấn đề</b><br>- <b>Vấn đề đã kích hoạt:</b> Đưa giải pháp trực tiếp (Sữa rửa mặt, mặt nạ).<br>- <b>Vấn đề chưa kích hoạt:</b> Dùng bài toán nhận thức (Tác hại ánh sáng xanh) để tạo nhu cầu cho sản phẩm mới.</span>
-    </div>
-""", unsafe_allow_html=True)
+    ngoai_canh = st.radio("Cập nhật nhịp sống hiện tại của bạn:", 
+                          ["Thời tiết Sài Gòn đang thay đổi thất thường", 
+                           "Đang bước vào mùa thi cử căng thẳng", 
+                           "Vừa nhập học/Bắt đầu môi trường mới"])
 
-tab1, tab2 = st.tabs(["Giải pháp tức thì (Sản phẩm tối ưu)", "Góc khám phá (Góc nhìn mới)"])
-
-with tab1:
-    st.subheader("Gợi ý phù hợp nhất lúc này")
-    if "dầu" in thuc_te.lower() or "bụi" in hoat_dong.lower():
-        st.write("🎯 **Trọng tâm: Làm sạch sâu & Kiểm soát bã nhờn**")
-        st.markdown("- **Bước 1:** Gel rửa mặt dịu nhẹ, cân bằng độ pH (VD: La Roche-Posay / Cerave).")
-        st.markdown("- **Bước 2:** Toner chiết xuất thiên nhiên giúp kháng viêm.")
+    if ngoai_canh == "Đang bước vào mùa thi cử căng thẳng":
+        st.error(f"📚 Mùa thi sát nút rồi {st.session_state.nickname} ơi! Sắm ngay bộ mặt nạ thạch thư giãn và chút tinh dầu để giảm stress nhé!")
+    elif ngoai_canh == "Thời tiết Sài Gòn đang thay đổi thất thường":
+        st.info("🌧️ Nắng mưa thất thường làm da dễ nhạy cảm. Hãy chú trọng khâu làm sạch và bảo vệ da tuyệt đối!")
     else:
-        st.write("🎯 **Trọng tâm: Phục hồi & Cấp ẩm**")
-        st.markdown("- **Bước 1:** Kem dưỡng ẩm phục hồi chuyên sâu ban đêm.")
-        st.markdown("- **Bước 2:** Mặt nạ cấp nước giúp làm dịu tức thì.")
+        st.success("🌟 Môi trường mới, năng lượng mới! Hãy tự tin tỏa sáng với phong thái rạng rỡ nhất.")
 
-with tab2:
-    st.subheader("💡 Bạn có biết?")
-    st.warning("💻 **Cảnh báo từ màn hình:** Việc thức khuya dùng điện thoại/laptop để chạy deadline phát ra lượng lớn ánh sáng xanh. Điều này không chỉ gây mỏi mắt mà còn kích thích sản sinh gốc tự do, làm da sạm đi 20% và lão hóa sớm!")
-    st.markdown("Chỉ rửa mặt là **CHƯA ĐỦ**. Dù không ra đường, bạn vẫn cần áp dụng **Làm Sạch Kép (Double Cleansing)** để loại bỏ bã nhờn và lớp kem chống nắng.")
-    st.button("Khám phá ngay: Dòng nước tẩy trang không cồn bảo vệ màng da ➔")
+    st.write("---")
+    col1, col2 = st.columns(2)
+    with col1:
+        st.button("⬅ Quay lại", on_click=prev_page)
+    with col2:
+        st.button("Tiếp theo ➔", on_click=next_page, key="btn_next_3")
 
-# --- FOOTER ---
-st.markdown("<br><hr><center><small>Dự án Hành vi Người tiêu dùng - Thiết kế bởi Nhung ✨</small></center>", unsafe_allow_html=True)
+# ==========================================
+# TRANG 4: 5.2.4 CHIẾN LƯỢC MARKETING
+# ==========================================
+elif st.session_state.page == 4:
+    st.markdown('''
+        <h3 class="tooltip-header" title="LÝ THUYẾT 5.2.4: Marketer chủ động phát hiện vấn đề qua phân tích hoạt động, nghiên cứu cảm xúc, và tạo ra sự nhận biết chung (kích thích nhu cầu cơ bản) hoặc nhận biết chọn lọc (kích thích mua thương hiệu cụ thể).">
+        4. Trải nghiệm & Chữa lành
+        </h3>
+    ''', unsafe_allow_html=True)
+    st.write("---")
+
+    st.write("**Khám phá qua Hoạt động:**")
+    hoat_dong = st.selectbox("Tùy chỉnh skincare theo hoàn cảnh:", ["Thường xuyên đi xe máy đường bụi", "Hay ngồi điều hòa 8 tiếng/ngày"])
+    if hoat_dong == "Thường xuyên đi xe máy đường bụi":
+        st.caption("👉 *Gợi ý:* Một combo sữa tắm làm sạch sâu và gel tẩy trang bụi mịn là chân ái của bạn.")
+    
+    st.write("---")
+    st.write("**Nghiên cứu Cảm xúc (Mood Tracker):**")
+    mood = st.select_slider("Tâm trạng hôm nay của bạn?", options=["Rất áp lực", "Mệt mỏi", "Bình thường", "Tràn đầy năng lượng"])
+    if mood in ["Rất áp lực", "Mệt mỏi"]:
+        st.success(f"🔮 Góc chữa lành: {st.session_state.nickname} hãy thắp một ngọn nến thơm, pha trà thảo mộc. Hệ thống đã mở khóa thêm một góc nhỏ để bạn xem bản đồ sao (Astrology) và đường chỉ tay để tìm lại sự bình yên hôm nay nhé. 🌙")
+    else:
+        st.success(f"Thật tuyệt vời, {st.session_state.nickname}! Hãy duy trì năng lượng tích cực này nhé. ✨")
+
+    st.write("---")
+    st.write("**Giáo dục khách hàng (Nhận biết chung & Chọn lọc):**")
+    st.info("💧 **Chiến dịch Double Cleansing:** Chỉ dùng sữa rửa mặt là chưa đủ! Website hiện đang có ưu đãi cho dòng nước tẩy trang độc quyền, không cồn, an toàn tuyệt đối. Thử ngay!")
+
+    st.write("---")
+    col1, col2 = st.columns(2)
+    with col1:
+        st.button("⬅ Quay lại", on_click=prev_page)
+    with col2:
+        st.button("🔄 Bắt đầu lại hành trình", on_click=lambda: st.session_state.update(page=0, nickname=""))
