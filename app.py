@@ -3,6 +3,183 @@ import os
 import json
 import streamlit as st
 
+# ===== L'AURA - BLUE & WHITE THEME =====
+st.markdown("""
+<style>
+
+/* 1. MÀU CHỮ VÀ NỀN CHÍNH */
+.stApp {
+    background-color: #F4F9FF;
+    color: #24364B;
+}
+
+[data-testid="stAppViewContainer"] {
+    background-color: #F4F9FF;
+}
+
+[data-testid="stHeader"] {
+    background-color: rgba(244, 249, 255, 0.95);
+}
+
+/* 2. THANH MENU BÊN TRÁI */
+[data-testid="stSidebar"] {
+    background-color: #E5F0FF;
+    border-right: 1px solid #D1E3FA;
+}
+
+[data-testid="stSidebar"] * {
+    color: #243F60;
+}
+
+/* 3. TIÊU ĐỀ */
+h1 {
+    color: #174A7E !important;
+    font-weight: 800 !important;
+}
+
+h2, h3 {
+    color: #2468A6 !important;
+    font-weight: 700 !important;
+}
+
+/* 4. NÚT BẤM */
+.stButton > button,
+.stDownloadButton > button,
+[data-testid="stFormSubmitButton"] > button {
+    background-color: #2878C8;
+    color: #FFFFFF !important;
+    border: 1px solid #2878C8;
+    border-radius: 10px;
+    padding: 9px 18px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.stButton > button:hover,
+.stDownloadButton > button:hover,
+[data-testid="stFormSubmitButton"] > button:hover {
+    background-color: #175A9C;
+    color: #FFFFFF !important;
+    border-color: #175A9C;
+}
+
+/* 5. THẺ CHỈ SỐ */
+[data-testid="stMetric"] {
+    background-color: #FFFFFF;
+    border: 1px solid #D7E8FA;
+    border-radius: 14px;
+    padding: 18px;
+    box-shadow: 0 3px 10px rgba(36, 104, 166, 0.06);
+}
+
+[data-testid="stMetricLabel"] {
+    color: #526B85 !important;
+}
+
+[data-testid="stMetricValue"] {
+    color: #175A9C !important;
+    font-weight: 750;
+}
+
+/* 6. KHUNG NỘI DUNG VÀ CONTAINER */
+[data-testid="stVerticalBlockBorderWrapper"] {
+    border-color: #D7E8FA;
+    border-radius: 14px;
+}
+
+[data-testid="stExpander"] {
+    background-color: #FFFFFF;
+    border: 1px solid #D7E8FA;
+    border-radius: 10px;
+}
+
+/* 7. Ô NHẬP LIỆU */
+.stTextInput input,
+.stTextArea textarea,
+.stNumberInput input {
+    background-color: #FFFFFF;
+    color: #24364B;
+    border: 1px solid #BDD6F2;
+    border-radius: 8px;
+}
+
+.stTextInput input:focus,
+.stTextArea textarea:focus,
+.stNumberInput input:focus {
+    border-color: #2878C8;
+    box-shadow: 0 0 0 1px #2878C8;
+}
+
+/* 8. HỘP CHỌN VÀ MENU THẢ XUỐNG */
+[data-testid="stSelectbox"] > div,
+[data-testid="stMultiSelect"] > div {
+    background-color: #FFFFFF;
+    border-radius: 8px;
+}
+
+/* 9. THANH TRẠNG THÁI VÀ THANH TIẾN TRÌNH */
+.stProgress > div > div > div > div {
+    background-color: #2878C8;
+}
+
+[data-testid="stAlert"] {
+    border-radius: 10px;
+}
+
+/* 10. BIỂU ĐỒ PLOTLY */
+[data-testid="stPlotlyChart"] {
+    background-color: #FFFFFF;
+    border: 1px solid #D7E8FA;
+    border-radius: 14px;
+    padding: 10px;
+}
+
+/* 11. BẢNG DỮ LIỆU */
+[data-testid="stDataFrame"],
+[data-testid="stTable"] {
+    background-color: #FFFFFF;
+    border: 1px solid #D7E8FA;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* 12. ĐƯỜNG PHÂN CÁCH */
+hr {
+    border: none;
+    border-top: 1px solid #D7E8FA;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+/* 13. LINK */
+a {
+    color: #176DB5 !important;
+}
+
+a:hover {
+    color: #0D4D85 !important;
+}
+
+/* 14. CHECKBOX VÀ RADIO */
+[data-testid="stCheckbox"] label,
+[data-testid="stRadio"] label {
+    color: #243F60;
+}
+
+/* 15. CHỈNH GIAO DIỆN TRÊN MÀN HÌNH NHỎ */
+@media (max-width: 768px) {
+    [data-testid="stMetric"] {
+        padding: 12px;
+    }
+
+    h1 {
+        font-size: 1.8rem !important;
+    }
+}
+
+</style>
+""", unsafe_allow_html=True)
+
 # ===== GIAO DIỆN L'AURA =====
 st.set_page_config(
     page_title="L'Aura - Consumer Insight Dashboard",
