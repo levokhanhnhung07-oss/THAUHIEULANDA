@@ -2,6 +2,79 @@
 import os
 import json
 import streamlit as st
+
+# ===== GIAO DIỆN L'AURA =====
+st.set_page_config(
+    page_title="L'Aura - Consumer Insight Dashboard",
+    page_icon="🌸",
+    layout="wide"
+)
+
+st.markdown("""
+<style>
+/* Nền chính */
+.stApp {
+    background-color: #FFF8FA;
+    color: #40333A;
+}
+
+/* Thanh menu bên trái */
+[data-testid="stSidebar"] {
+    background-color: #F6E8EF;
+}
+
+/* Tiêu đề */
+h1, h2, h3 {
+    color: #8F456A !important;
+}
+
+/* Nút bấm */
+.stButton > button {
+    background-color: #C879A0;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 8px 18px;
+    font-weight: 600;
+}
+
+/* Khi rê chuột vào nút */
+.stButton > button:hover {
+    background-color: #A95881;
+    color: white;
+    border: none;
+}
+
+/* Ô nhập liệu */
+.stTextInput input,
+.stTextArea textarea,
+.stNumberInput input {
+    background-color: #FFFFFF;
+    color: #40333A;
+    border: 1px solid #E4B8CD;
+    border-radius: 8px;
+}
+
+/* Khung thông tin */
+[data-testid="stMetric"] {
+    background-color: #FFFFFF;
+    border: 1px solid #F0D7E2;
+    padding: 16px;
+    border-radius: 12px;
+}
+
+/* Đường phân cách */
+hr {
+    border-color: #EBD4DF;
+}
+
+/* Thông báo */
+[data-testid="stAlert"] {
+    border-radius: 10px;
+}
+</style>
+""", unsafe_allow_html=True)
+
 import pandas as pd
 from datetime import datetime
 from openai import OpenAI
